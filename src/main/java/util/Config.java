@@ -16,10 +16,10 @@ import java.util.ArrayList;
  */
 public class Config {
 
-    static File configFile = new File("Config.json");
-    static File workingDir;
-    static JSONParser parser = new JSONParser();
-    static JSONObject configJsonObject;
+    private static File configFile = new File("Config.json");
+    private static File workingDir;
+    private static JSONParser parser = new JSONParser();
+    private static JSONObject configJsonObject;
 
     public Config() {
         if (!configFile.exists()) {
@@ -132,6 +132,8 @@ public class Config {
         server.put("startCMD", startCMD);
         server.put("stopCMD", stopCMD);
         server.put("benutzer", benutzer);
+        server.put("serverDir", workingDir.getAbsolutePath() + "/" + name + "/");
+        new File(workingDir.getAbsolutePath() + "/" + name + "/").mkdirs();
 
         addServer(server);
     }
