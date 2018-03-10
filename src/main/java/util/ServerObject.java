@@ -43,7 +43,7 @@ public class ServerObject {
 
     public boolean isRunning() {
         //TODO Richtige Prüfung!
-        return false;
+        return (Math.random() < 0.5);
     }
 
     public void starten() {

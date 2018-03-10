@@ -19,8 +19,16 @@ public class ScreenCommand {
                 serverObject.getRestart() ? String.format("su -c \"bash -c 'while true; do %s; echo \\\"Beendet - Restart folgt\\\"; sleep 5; done'\" %s", serverObject.getStartCMD(),
                         serverObject.getBenutzer()) :
                 String.format("su -c '%s' %s", serverObject.getStartCMD(), serverObject.getBenutzer()));
+        processBuilder.command(aussen);
 
-        System.out.println(aussen);
+        System.out.println("Starte: " + aussen);
+        try {
+            processBuilder.start().waitFor();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stopCommand(ServerObject serverObject) {

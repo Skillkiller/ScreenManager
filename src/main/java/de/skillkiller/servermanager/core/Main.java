@@ -1,6 +1,7 @@
 package de.skillkiller.servermanager.core;
 
 import util.Config;
+import util.ConsoleColors;
 import util.ServerObject;
 import util.Utils;
 
@@ -17,17 +18,33 @@ public class Main {
     private final static String VERSION = "1.0.1";
 
     private static Scanner in = new Scanner(System.in);
+    private static boolean exit = false;
 
     public static void main(String[] args) {
         new Config();
+
+        if(!System.getProperty("os.name").contains("nix")) {
+            System.out.println(System.getProperty("os.name"));
+            System.err.println("Dieses Tool ist nur für Linux");
+            //System.exit(1);
+        }
+
+        if (!System.getProperty("user.name").equals("root")) {
+            System.out.println(System.getProperty("user.name"));
+            System.err.println("Dieses Tool muss als Root ausgführt werden");
+            //System.exit(2);
+        }
+
+
         //Zum Testen automatisch ein paar Server zur Verfügung haben
         for (int i = 0; i < 10 - Config.getServers().size(); i++) {
             Config.createServer(UUID.randomUUID().toString(), (Math.random() < 0.5), "", "", "root");
         }
 
-        while (true) {
+        while (!exit) {
             printMenue();
         }
+        System.exit(0);
     }
 
     private static void printHeadline() {
@@ -40,7 +57,9 @@ public class Main {
         for (ServerObject serverObject : Config.getServers()) {
             System.out.println(String.format("%s | %s | %s | %s [%s]",
                     Utils.pad(serverObject.getName(), 50), Utils.pad(serverObject.getBenutzer(), 10),
-                    serverObject.isRunning() ? "Running" : "Stopped",
+                    serverObject.isRunning() ?
+                            (serverObject.getRestart() ? ConsoleColors.GREEN.print(Utils.pad("Running Loop", 13)) : ConsoleColors.GREEN.print(Utils.pad("Running", 13))) :
+                            ConsoleColors.RED.print(Utils.pad("Stopped", 13)),
                     Utils.pad(serverObject.getStartCMD(), 25), Utils.pad(serverObject.getStopCMD(), 25)));
         }
     }
@@ -93,7 +112,7 @@ public class Main {
                 break;
 
             case "exit":
-                System.exit(0);
+                exit = true;
                 break;
         }
     }

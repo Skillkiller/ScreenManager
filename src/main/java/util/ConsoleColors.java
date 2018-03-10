@@ -5,7 +5,6 @@ package util;
  */
 public enum ConsoleColors {
 
-    //TODO Weiter Farben hinzufügen - https://stackoverflow.com/a/45444716
     BLACK("0"),
     RED("1"),
     GREEN("2"),
