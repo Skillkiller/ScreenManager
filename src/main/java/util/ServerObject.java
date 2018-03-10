@@ -1,5 +1,7 @@
 package util;
 
+import de.skillkiller.servermanager.core.ScreenCommand;
+
 import java.io.File;
 
 import static util.Config.getServerJSONObject;
@@ -42,6 +44,18 @@ public class ServerObject {
     public boolean isRunning() {
         //TODO Richtige Prüfung!
         return false;
+    }
+
+    public void starten() {
+        if (!isRunning()) {
+            new ScreenCommand().startCommand(this);
+        }
+    }
+
+    public void stoppen() {
+        if (!isRunning()) {
+            new ScreenCommand().stopCommand(this);
+        }
     }
 
     public void printStats() {

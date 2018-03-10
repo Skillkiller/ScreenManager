@@ -50,17 +50,19 @@ public class Main {
         printServer();
 
         System.out.println();
-        System.out.println("Befehle: [start | stop | info | create | delete]");
-        System.out.println("Befehl: ");
+        System.out.println("Befehle: [start | stop | info | create | delete | exit]");
+        System.out.print("Befehl: ");
         String input[] = in.nextLine().toLowerCase().split(" ");
         if(!Config.serverExist(input[1]) && !input[0].equals("create")) return;
         switch (input[0]) {
             case "start":
                 //TODO Server starten
+                Objects.requireNonNull(Config.getServerObject(input[1])).starten();
                 break;
 
             case "stop":
                 //TODO Server stoppen
+                Objects.requireNonNull(Config.getServerObject(input[1])).stoppen();
                 break;
 
             case "info":
@@ -88,6 +90,10 @@ public class Main {
                     }
                     Config.removeServer(input[1]);
                 }
+                break;
+
+            case "exit":
+                System.exit(0);
                 break;
         }
     }
