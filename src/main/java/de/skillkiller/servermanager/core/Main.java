@@ -5,6 +5,7 @@ import util.ConsoleColors;
 import util.ServerObject;
 import util.Utils;
 
+import java.io.File;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -17,7 +18,6 @@ public class Main {
     private final static String VERSION = "1.0.1";
 
     private static Scanner in = new Scanner(System.in);
-    private static boolean exit = false;
 
     public static void main(String[] args) {
         new Config();
@@ -34,14 +34,29 @@ public class Main {
             System.exit(2);
         }
 
+        int deleted = 0;
+        int added = 0;
 
-        //Zum Testen automatisch ein paar Server zur Verfügung haben
-        /*for (int i = 0; i < 10 - Config.getServers().size(); i++) {
-            Config.createServer(UUID.randomUUID().toString(), (Math.random() < 0.5), "", "", "root");
-        }*/
+        for (ServerObject server : Config.getServers()) {
+            if(!server.getServerDir().exists() || !server.getServerDir().isDirectory()) {
+                Config.removeServer(server.getName());
+                deleted++;
+            }
+        }
 
+        for (File file : Objects.requireNonNull(Config.getWorkingDir().listFiles())) {
+            if(file.isDirectory() && !Config.serverExist(file.getName())) {
+                Config.createServer(file.getName(), false, "./start.sh", "", "root");
+                added++;
+            }
+        }
+
+        if(added > 0) System.out.println(ConsoleColors.GREEN.bold(String.valueOf(added)) + ConsoleColors.GREEN.print(" Server wurden hinzugefügt"));
+        if(deleted > 0) System.out.println(ConsoleColors.RED.bold(String.valueOf(deleted)) + ConsoleColors.RED.print(" Server wurden gelöscht"));
+
+        boolean exit = false;
         while (!exit) {
-            menue();
+            printMainMenue();
         }
         System.exit(0);
     }
@@ -65,15 +80,15 @@ public class Main {
                     serverObject.isRunning() ?
                             (serverObject.getRestart() ? ConsoleColors.GREEN.print(Utils.pad("Running Loop", 13)) : ConsoleColors.GREEN.print(Utils.pad("Running", 13))) :
                             ConsoleColors.RED.print(Utils.pad("Stopped", 13)),
-                    Utils.pad(serverObject.getStartCMD(), 25), Utils.pad(serverObject.getStopCMD(), 25)));
+                    Utils.pad(serverObject.getStartCMD(), 25), Utils.pad(serverObject.getRestart() ? "Auto Restart" : "No Restart", 14)));
         }
     }
 
-    private static void menue() {
+    private static void printMainMenue() {
         printHeadline();
         printServer();
         System.out.println();
-        System.out.println("Befehle: " + ConsoleColors.PURPLE.print("[start | stop | info | create | delete | exit]"));
+        System.out.println("Befehle: " + ConsoleColors.PURPLE.print("[start | stop | info | create | delete | modify | exit]"));
         System.out.print("Befehl: ");
         String input = in.nextLine().toLowerCase();
         if (input.contains(" ")) {
@@ -81,30 +96,34 @@ public class Main {
             if (!args[0].equals("create") && !Config.serverExist(args[1])) return;
             switch (args[0]) {
                 case "start":
-                    //TODO Server starten
                     Objects.requireNonNull(Config.getServerObject(args[1])).starten();
+                    System.out.println("Starte den ausgwählten Server");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) { }
                     break;
 
                 case "stop":
-                    //TODO Server stoppen
                     Objects.requireNonNull(Config.getServerObject(args[1])).stoppen();
+                    System.out.println("Stoppe den ausgwählten Server");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) { }
                     break;
 
                 case "info":
-                    //TODO Server Info ausgeben
                     Objects.requireNonNull(Config.getServerObject(args[1])).printStats();
                     Utils.UserQuestionOk("Gelesen?");
                     break;
 
                 case "create":
-                    //TODO Server erstellen
                     if (Utils.userQuestionBoolean("Du willst den Server \"" + args[1] + "\" erstellen?", true)) {
                         boolean restart = Utils.userQuestionBoolean("Auto-Restart?", false);
                         String benutzer = Utils.userQuestionString("Benutzer?", 2);
                         String startCMD = Utils.userQuestionString("Start-Befehl?", 2);
-                        String stopCMD = Utils.userQuestionString("Stop-Befehl?");
+                        String stepCMD = Utils.userQuestionString("Zwischen-Befehl?");
 
-                        Config.createServer(args[1], restart, startCMD, stopCMD, benutzer);
+                        Config.createServer(args[1], restart, startCMD, stepCMD, benutzer);
                     }
                     break;
 
@@ -116,11 +135,73 @@ public class Main {
                         Config.removeServer(args[1]);
                     }
                     break;
+
+                    //TODO Modify Befehl buggy
+                /*case "modify":
+                    printModifyMenue(args[1]);
+                    break;*/
             }
         } else {
-            if (input.equals("exit")) {
+            if (input.equals("exit") || input.equals("e")) {
                 System.exit(0);
             }
+        }
+    }
+
+    private static void printModifyMenue(String name) {
+        System.out.println();
+        System.out.println("Modifizierung von " + name);
+        System.out.println("Befehle: " + ConsoleColors.PURPLE.print("[restart | benutzer | startCMD | stopCMD | serverDir]"));
+        System.out.print("Befehl: ");
+        String input = in.nextLine().toLowerCase();
+        String[] args;
+        if (input.contains(" ")) {
+            args = input.split(" ");
+        } else {
+            System.out.println(ConsoleColors.RED.print("Zu wenig Argumente!"));
+            printModifyMenue(name);
+            return;
+        }
+
+        StringBuilder stringBuilder;
+        switch (args[0]) {
+            case "restart":
+                try {
+                    Objects.requireNonNull(Config.getServerObject(name)).setRestart(Boolean.valueOf(args[1]));
+                    System.out.println(ConsoleColors.GREEN.print("Restart erfolgreich gesetzt"));
+                } catch (Exception ignore) {
+                    System.out.println(ConsoleColors.RED.bold("Nur \"true\" oder \"false\""));
+                    printModifyMenue(name);
+                }
+                break;
+
+            case "benutzer":
+                Objects.requireNonNull(Config.getServerObject(name)).setBenutzer(args[1]);
+                System.out.println(ConsoleColors.GREEN.print("Benutzer erfolgreich gesetzt"));
+                break;
+
+            case "startCMD":
+                stringBuilder = new StringBuilder();
+                for (int i = 1; i < args.length; i++) {
+                    stringBuilder.append(args[i] + " ");
+                }
+                Objects.requireNonNull(Config.getServerObject(name)).setStartCMD(stringBuilder.toString());
+                System.out.println(ConsoleColors.GREEN.print("StartCMD erfolgreich gesetzt"));
+                break;
+
+            case "stepCMD":
+                stringBuilder = new StringBuilder();
+                for (int i = 1; i < args.length; i++) {
+                    stringBuilder.append(args[i]).append(" ");
+                }
+                Objects.requireNonNull(Config.getServerObject(name)).setStepCMD(args[1]);
+                System.out.println(ConsoleColors.GREEN.print("StepCMD erfolgreich gesetzt"));
+                break;
+
+                //TODO ServerDir Argument einarbeiten
+
+                default:
+                    System.out.println(ConsoleColors.RED.print("Befehl nicht erkannt"));
         }
     }
 }
