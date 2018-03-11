@@ -3,6 +3,7 @@ package util;
 import de.skillkiller.servermanager.core.ScreenCommand;
 
 import java.io.File;
+import java.util.Objects;
 
 import static util.Config.getServerJSONObject;
 
@@ -43,7 +44,17 @@ public class ServerObject {
 
     public boolean isRunning() {
         //TODO Richtige Prüfung!
-        return (Math.random() < 0.5);
+        File screens = new File("/var/run/screen/S-root/");
+        boolean gefunden = false;
+        if (!screens.isDirectory()) return false;
+        for (File f : Objects.requireNonNull(screens.listFiles())) {
+            String name[] = f.getName().split("\\.");
+            if (name[1].equals(getName())) {
+                gefunden = true;
+                break;
+            }
+        }
+        return gefunden;
     }
 
     public void starten() {
@@ -53,7 +64,7 @@ public class ServerObject {
     }
 
     public void stoppen() {
-        if (!isRunning()) {
+        if (isRunning()) {
             new ScreenCommand().stopCommand(this);
         }
     }
@@ -64,7 +75,7 @@ public class ServerObject {
         System.out.println("StartCMD: " + getStartCMD());
         System.out.println("StopCMD: " + getStopCMD());
         System.out.println("Benutzer: " + getBenutzer());
-        System.out.println("Server Ordner: " + getServerDir().getAbsolutePath());
+        System.out.println("Server Ordner: " + getServerDir().getAbsolutePath() + "[" + getServerDir().isDirectory() + "]");
     }
 
 }
