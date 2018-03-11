@@ -34,9 +34,7 @@ public class Config {
         } else {
             try {
                 configJsonObject = (JSONObject) parser.parse(new FileReader(configFile));
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
+            } catch (IOException | ParseException e) {
                 e.printStackTrace();
             }
         }
@@ -69,8 +67,8 @@ public class Config {
         ArrayList<ServerObject> servers = new ArrayList<>();
         JSONArray jsonArray = getServersArray();
 
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+        for (Object aJsonArray : jsonArray) {
+            JSONObject jsonObject = (JSONObject) aJsonArray;
             servers.add(getServerObject((String) jsonObject.get("name")));
         }
         return servers;
@@ -105,7 +103,28 @@ public class Config {
         }
     }
 
-    protected static JSONObject getServerJSONObject(String name) {
+    public static void setServerJSONObject(JSONObject serverJSONObject) {
+        JSONArray jsonArray = getServersArray();
+        int find = -1;
+
+        while (find == -1) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                if(jsonObject.containsKey("name")) {
+                    if (jsonObject.get("name").toString().equals(serverJSONObject.get("name"))) {
+                        find = 1;
+                    }
+                }
+            }
+        }
+
+        jsonArray.remove(find);
+        jsonArray.add(serverJSONObject);
+        configJsonObject.replace("servers", jsonArray);
+        saveJSON();
+    }
+
+    static JSONObject getServerJSONObject(String name) {
         if (serverExist(name)) {
             JSONArray jsonArray = getServersArray();
             JSONObject server = null;
@@ -125,12 +144,12 @@ public class Config {
         return null;
     }
 
-    public static void createServer(String name, boolean restart, String startCMD, String stopCMD, String benutzer) {
+    public static void createServer(String name, boolean restart, String startCMD, String stepCMD, String benutzer) {
         JSONObject server = new JSONObject();
         server.put("name", name);
         server.put("restart", restart);
         server.put("startCMD", startCMD);
-        server.put("stopCMD", stopCMD);
+        server.put("stepCMD", stepCMD);
         server.put("benutzer", benutzer);
         server.put("serverDir", workingDir.getAbsolutePath() + "/" + name + "/");
         new File(workingDir.getAbsolutePath() + "/" + name + "/").mkdirs();
