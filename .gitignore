@@ -65,3 +65,4 @@ fabric.properties
 # Own Files
 Config.json
 server/*
+ScreenManager.iml
