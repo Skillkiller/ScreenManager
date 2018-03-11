@@ -79,8 +79,10 @@ public class ServerObject {
         boolean gefunden = false;
         if (!screens.isDirectory()) return false;
         for (File f : Objects.requireNonNull(screens.listFiles())) {
-            String name[] = f.getName().split("\\.");
-            if (name[1].equals(getName())) {
+            String name = f.getName();
+            name = name.substring(name.indexOf(".") + 1);
+            //System.out.println(name);
+            if (name.equals(getName())) {
                 gefunden = true;
                 break;
             }

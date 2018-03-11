@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class Main {
 
     //Versionsnummer
-    private final static String VERSION = "1.0.1";
+    private final static String VERSION = "1.5.2";
 
     private static Scanner in = new Scanner(System.in);
 
@@ -64,7 +64,6 @@ public class Main {
     private static void printHeadline() {
         System.out.println();
         System.out.println();
-        System.out.println();
         System.out.println("###############################");
         System.out.println();
         System.out.println("Screen Manager - " + VERSION);
@@ -80,7 +79,7 @@ public class Main {
                     serverObject.isRunning() ?
                             (serverObject.getRestart() ? ConsoleColors.GREEN.print(Utils.pad("Running Loop", 13)) : ConsoleColors.GREEN.print(Utils.pad("Running", 13))) :
                             ConsoleColors.RED.print(Utils.pad("Stopped", 13)),
-                    Utils.pad(serverObject.getStartCMD(), 25), Utils.pad(serverObject.getRestart() ? "Auto Restart" : "No Restart", 14)));
+                    Utils.pad(serverObject.getStartCMD(), 25), Utils.pad(serverObject.getRestart() ? "Auto Restart" : "No Restart", 10)));
         }
     }
 
@@ -91,13 +90,14 @@ public class Main {
         System.out.println("Befehle: " + ConsoleColors.PURPLE.print("[start | stop | info | create | delete | modify | exit]"));
         System.out.print("Befehl: ");
         String input = in.nextLine().toLowerCase();
+        System.out.println();
         if (input.contains(" ")) {
             String args[] = input.split(" ");
             if (!args[0].equals("create") && !Config.serverExist(args[1])) return;
             switch (args[0]) {
                 case "start":
                     Objects.requireNonNull(Config.getServerObject(args[1])).starten();
-                    System.out.println("Starte den ausgwählten Server");
+                    System.out.println(ConsoleColors.GREEN.print("Starte den ausgwählten Server"));
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ignored) { }
@@ -105,7 +105,7 @@ public class Main {
 
                 case "stop":
                     Objects.requireNonNull(Config.getServerObject(args[1])).stoppen();
-                    System.out.println("Stoppe den ausgwählten Server");
+                    System.out.println(ConsoleColors.GREEN.print("Stoppe den ausgwählten Server"));
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ignored) { }
