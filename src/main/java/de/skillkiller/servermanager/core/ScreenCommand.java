@@ -12,32 +12,35 @@ import java.util.stream.Collectors;
  */
 public class ScreenCommand {
     public void startCommand(ServerObject serverObject) {
-        ProcessBuilder processBuilder = new ProcessBuilder();
+
+        String command;
+        if(serverObject.getRestart()) {
+            command = String.format("bash -c 'while true; do %s; echo \\\"Beendet - Restart folgt\\\"; sleep 5; done'", serverObject.getStartCMD());
+        } else {
+            command = String.format("bash -c '%s'", serverObject.getStartCMD());
+        }
+
+        ProcessBuilder processBuilder = new ProcessBuilder("screen", "-dmS", serverObject.getName(), "su", "-c", command, serverObject.getBenutzer() );
         processBuilder.directory(serverObject.getServerDir());
         String aussen = String.format("screen -dmS %s %s",
                 serverObject.getName(),
                 serverObject.getRestart() ? String.format("su -c \"bash -c 'while true; do %s; echo \\\"Beendet - Restart folgt\\\"; sleep 5; done'\" %s", serverObject.getStartCMD(),
                         serverObject.getBenutzer()) :
                 String.format("su -c '%s' %s", serverObject.getStartCMD(), serverObject.getBenutzer()));
-        processBuilder.command(aussen);
+        //processBuilder.command(aussen);
 
-        System.out.println("Starte: " + aussen);
+        System.out.println("Starte: " + processBuilder.command());
         try {
             processBuilder.start().waitFor();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
     }
 
     public void stopCommand(ServerObject serverObject) {
         //TODO Überarbeiten!
-        ProcessBuilder processBuilder = new ProcessBuilder();
+        ProcessBuilder processBuilder = new ProcessBuilder("screen", "-S", serverObject.getName(), "-X", "quit");
         processBuilder.directory(serverObject.getServerDir());
-        processBuilder.command(String.format("screen -S %s -X %s",
-                serverObject.getName(), serverObject.getStopCMD()));
-        processBuilder.command(String.format("screen -S %s -X quit", serverObject.getName()));
 
         System.out.println(processBuilder.command());
         try {
