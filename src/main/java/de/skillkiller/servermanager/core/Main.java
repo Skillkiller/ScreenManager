@@ -7,7 +7,6 @@ import util.Utils;
 
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.UUID;
 
 /**
  * Created by Skillkiller on 09.03.2018.
@@ -23,34 +22,40 @@ public class Main {
     public static void main(String[] args) {
         new Config();
 
-        if(!System.getProperty("os.name").contains("nix")) {
-            System.out.println(System.getProperty("os.name"));
+        if(!System.getProperty("os.name").contains("nux")) {
+            System.out.println("OS: " + System.getProperty("os.name"));
             System.err.println("Dieses Tool ist nur für Linux");
-            //System.exit(1);
+            System.exit(1);
         }
 
         if (!System.getProperty("user.name").equals("root")) {
-            System.out.println(System.getProperty("user.name"));
+            System.out.println("Benutzer: " + System.getProperty("user.name"));
             System.err.println("Dieses Tool muss als Root ausgführt werden");
-            //System.exit(2);
+            System.exit(2);
         }
 
 
         //Zum Testen automatisch ein paar Server zur Verfügung haben
-        for (int i = 0; i < 10 - Config.getServers().size(); i++) {
+        /*for (int i = 0; i < 10 - Config.getServers().size(); i++) {
             Config.createServer(UUID.randomUUID().toString(), (Math.random() < 0.5), "", "", "root");
-        }
+        }*/
 
         while (!exit) {
-            printMenue();
+            menue();
         }
         System.exit(0);
     }
 
     private static void printHeadline() {
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println("###############################");
+        System.out.println();
         System.out.println("Screen Manager - " + VERSION);
         System.out.println("Created by Skillkiller");
         System.out.println();
+        System.out.println("###############################");
     }
 
     private static void printServer() {
@@ -64,56 +69,58 @@ public class Main {
         }
     }
 
-    private static void printMenue() {
+    private static void menue() {
         printHeadline();
         printServer();
-
         System.out.println();
-        System.out.println("Befehle: [start | stop | info | create | delete | exit]");
+        System.out.println("Befehle: " + ConsoleColors.PURPLE.print("[start | stop | info | create | delete | exit]"));
         System.out.print("Befehl: ");
-        String input[] = in.nextLine().toLowerCase().split(" ");
-        if(!Config.serverExist(input[1]) && !input[0].equals("create")) return;
-        switch (input[0]) {
-            case "start":
-                //TODO Server starten
-                Objects.requireNonNull(Config.getServerObject(input[1])).starten();
-                break;
+        String input = in.nextLine().toLowerCase();
+        if (input.contains(" ")) {
+            String args[] = input.split(" ");
+            if (!args[0].equals("create") && !Config.serverExist(args[1])) return;
+            switch (args[0]) {
+                case "start":
+                    //TODO Server starten
+                    Objects.requireNonNull(Config.getServerObject(args[1])).starten();
+                    break;
 
-            case "stop":
-                //TODO Server stoppen
-                Objects.requireNonNull(Config.getServerObject(input[1])).stoppen();
-                break;
+                case "stop":
+                    //TODO Server stoppen
+                    Objects.requireNonNull(Config.getServerObject(args[1])).stoppen();
+                    break;
 
-            case "info":
-                //TODO Server Info ausgeben
-                Objects.requireNonNull(Config.getServerObject(input[1])).printStats();
-                Utils.UserQuestionOk("Gelesen?");
-                break;
+                case "info":
+                    //TODO Server Info ausgeben
+                    Objects.requireNonNull(Config.getServerObject(args[1])).printStats();
+                    Utils.UserQuestionOk("Gelesen?");
+                    break;
 
-            case "create":
-                //TODO Server erstellen
-                if (Utils.userQuestionBoolean("Du willst den Server \"" + input[1] + "\" erstellen?", true)) {
-                    boolean restart = Utils.userQuestionBoolean("Auto-Restart?", false);
-                    String benutzer = Utils.userQuestionString("Benutzer?", 2);
-                    String startCMD = Utils.userQuestionString("Start-Befehl?", 2);
-                    String stopCMD = Utils.userQuestionString("Stop-Befehl?", 2);
+                case "create":
+                    //TODO Server erstellen
+                    if (Utils.userQuestionBoolean("Du willst den Server \"" + args[1] + "\" erstellen?", true)) {
+                        boolean restart = Utils.userQuestionBoolean("Auto-Restart?", false);
+                        String benutzer = Utils.userQuestionString("Benutzer?", 2);
+                        String startCMD = Utils.userQuestionString("Start-Befehl?", 2);
+                        String stopCMD = Utils.userQuestionString("Stop-Befehl?");
 
-                    Config.createServer(input[1], restart, startCMD, stopCMD, benutzer);
-                }
-                break;
-
-            case "delete":
-                if (Utils.userQuestionBoolean("Du willst den Server \"" + input[1] + "\" löschen?", false)) {
-                    if(Utils.userQuestionBoolean("Server Ordner auch löschen?")) {
-                        Objects.requireNonNull(Config.getServerObject(input[1])).getServerDir().delete();
+                        Config.createServer(args[1], restart, startCMD, stopCMD, benutzer);
                     }
-                    Config.removeServer(input[1]);
-                }
-                break;
+                    break;
 
-            case "exit":
-                exit = true;
-                break;
+                case "delete":
+                    if (Utils.userQuestionBoolean("Du willst den Server \"" + args[1] + "\" löschen?", false)) {
+                        if(Utils.userQuestionBoolean("Server Ordner auch löschen?")) {
+                            Objects.requireNonNull(Config.getServerObject(args[1])).getServerDir().delete();
+                        }
+                        Config.removeServer(args[1]);
+                    }
+                    break;
+            }
+        } else {
+            if (input.equals("exit")) {
+                System.exit(0);
+            }
         }
     }
 }
