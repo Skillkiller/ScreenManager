@@ -23,13 +23,13 @@ public class Main {
         if(!System.getProperty("os.name").contains("nux")) {
             System.out.println("OS: " + System.getProperty("os.name"));
             System.err.println("Dieses Tool ist nur für Linux");
-            System.exit(1);
+            //System.exit(1);
         }
 
         if (!System.getProperty("user.name").equals("root")) {
             System.out.println("Benutzer: " + System.getProperty("user.name"));
             System.err.println("Dieses Tool muss als Root ausgführt werden");
-            System.exit(2);
+            //System.exit(2);
         }
 
         new Config();
@@ -46,7 +46,7 @@ public class Main {
 
         for (File file : Objects.requireNonNull(Config.getWorkingDir().listFiles())) {
             if(file.isDirectory() && !Config.serverExist(file.getName())) {
-                Config.createServer(file.getName(), false, "./start.sh", "", "root");
+                Config.createServer(file.getName(), false, "./start.sh", "", "root", new File(Config.getWorkingDir() + "/" + file.getName() + "/"));
                 added++;
             }
         }
@@ -122,8 +122,9 @@ public class Main {
                         String benutzer = Utils.userQuestionString("Benutzer?", 2);
                         String startCMD = Utils.userQuestionString("Start-Befehl?", 2);
                         String stepCMD = Utils.userQuestionString("Zwischen-Befehl?");
+                        String serverDir = Utils.userQuestionString("Server Ordner", "/home/" + benutzer + "/" + args[1] + "/");
 
-                        Config.createServer(args[1], restart, startCMD, stepCMD, benutzer);
+                        Config.createServer(args[1], restart, startCMD, stepCMD, benutzer, new File(serverDir));
                     }
                     break;
 
