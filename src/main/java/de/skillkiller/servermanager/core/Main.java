@@ -15,13 +15,11 @@ import java.util.Scanner;
 public class Main {
 
     //Versionsnummer
-    private final static String VERSION = "1.5.2";
+    private final static String VERSION = "1.5.3";
 
     private static Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) {
-        new Config();
-
         if(!System.getProperty("os.name").contains("nux")) {
             System.out.println("OS: " + System.getProperty("os.name"));
             System.err.println("Dieses Tool ist nur für Linux");
@@ -33,6 +31,8 @@ public class Main {
             System.err.println("Dieses Tool muss als Root ausgführt werden");
             System.exit(2);
         }
+
+        new Config();
 
         int deleted = 0;
         int added = 0;
@@ -75,11 +75,11 @@ public class Main {
     private static void printServer() {
         for (ServerObject serverObject : Config.getServers()) {
             System.out.println(String.format("%s | %s | %s | %s [%s]",
-                    Utils.pad(serverObject.getName(), 50), Utils.pad(serverObject.getBenutzer(), 10),
+                    Utils.pad(serverObject.getName(), 30), Utils.pad(serverObject.getBenutzer(), 15),
                     serverObject.isRunning() ?
                             (serverObject.getRestart() ? ConsoleColors.GREEN.print(Utils.pad("Running Loop", 13)) : ConsoleColors.GREEN.print(Utils.pad("Running", 13))) :
                             ConsoleColors.RED.print(Utils.pad("Stopped", 13)),
-                    Utils.pad(serverObject.getStartCMD(), 25), Utils.pad(serverObject.getRestart() ? "Auto Restart" : "No Restart", 10)));
+                    Utils.pad(serverObject.getStartCMD(), 35), Utils.pad(serverObject.getRestart() ? "Auto Restart" : "Single Start", 13)));
         }
     }
 
