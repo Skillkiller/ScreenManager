@@ -68,6 +68,17 @@ public class Utils {
         return new Scanner(System.in).nextLine();
     }
 
+    public static String userQuestionString(String message, String fallback) {
+        System.out.println(message);
+        System.out.print(String.format("Eingabe[%s]: ", fallback));
+        String input = new Scanner(System.in).nextLine();
+        if (input.length() > 0) {
+            return input;
+        } else {
+            return fallback;
+        }
+    }
+
     public static String userQuestionString(String message, int minlength) {
         System.out.println(message);
         System.out.print("Eingabe[min " + minlength + "]: ");
