@@ -11,7 +11,7 @@ Das Programm verwaltet für euch verschiedenste Arten von Servern. Ihr könnt da
 - Automatisches Restarten abgestürzter Server
 ___
 ## Instaltion
-Im [Releas Feld](https://github.com/Skillkiller/ScreenManager/releases) findet ihr eine Jar Datei zum Herunterladen, diese wird nur zu jedem großen Update aktualisiert. Ihr könnt euch auch diese Repository klonen und die Datei selbst Compilen.
+Im [Release Feld](https://github.com/Skillkiller/ScreenManager/releases) findet ihr eine Jar Datei zum Herunterladen, diese wird nur zu jedem großen Update aktualisiert. Ihr könnt euch auch diese Repository klonen und die Datei selbst Compilen.
 ___
 ### TODO
 - [ ] Installationsroutine
