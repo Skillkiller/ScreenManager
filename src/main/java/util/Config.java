@@ -44,7 +44,7 @@ public class Config {
         }
 
         if (!configJsonObject.containsKey("workingDir")) {
-            configJsonObject.put("workingDir", "server/");
+            configJsonObject.put("workingDir", "/server/");
             saveJSON();
         }
         workingDir = new File((String) configJsonObject.get("workingDir"));
@@ -53,7 +53,7 @@ public class Config {
         }
         if (!workingDir.isDirectory()) {
             configJsonObject.replace("workingDir", "server/");
-            workingDir = new File("server/");
+            workingDir = new File("/server/");
             workingDir.mkdirs();
         }
 
