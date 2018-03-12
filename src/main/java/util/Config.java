@@ -144,15 +144,15 @@ public class Config {
         return null;
     }
 
-    public static void createServer(String name, boolean restart, String startCMD, String stepCMD, String benutzer) {
+    public static void createServer(String name, boolean restart, String startCMD, String stepCMD, String benutzer, String serverDir) {
         JSONObject server = new JSONObject();
         server.put("name", name);
         server.put("restart", restart);
         server.put("startCMD", startCMD);
         server.put("stepCMD", stepCMD);
         server.put("benutzer", benutzer);
-        server.put("serverDir", workingDir.getAbsolutePath() + "/" + name + "/");
-        new File(workingDir.getAbsolutePath() + "/" + name + "/").mkdirs();
+        server.put("serverDir", server);
+        new File(serverDir).mkdirs();
 
         addServer(server);
     }

@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class Main {
 
     //Versionsnummer
-    private final static String VERSION = "1.5.3";
+    private final static String VERSION = "1.5.4";
 
     private static Scanner in = new Scanner(System.in);
 
@@ -46,7 +46,7 @@ public class Main {
 
         for (File file : Objects.requireNonNull(Config.getWorkingDir().listFiles())) {
             if(file.isDirectory() && !Config.serverExist(file.getName())) {
-                Config.createServer(file.getName(), false, "./start.sh", "", "root");
+                Config.createServer(file.getName(), false, "./start.sh", "", "root", Config.getWorkingDir() + "/" + file.getName() + "/");
                 added++;
             }
         }
@@ -122,8 +122,9 @@ public class Main {
                         String benutzer = Utils.userQuestionString("Benutzer?", 2);
                         String startCMD = Utils.userQuestionString("Start-Befehl?", 2);
                         String stepCMD = Utils.userQuestionString("Zwischen-Befehl?");
+                        String serverDir = Utils.userQuestionString("Server Ordner", "/home/" + benutzer + "/" + args[1] + "/");
 
-                        Config.createServer(args[1], restart, startCMD, stepCMD, benutzer);
+                        Config.createServer(args[1], restart, startCMD, stepCMD, benutzer, serverDir);
                     }
                     break;
 
