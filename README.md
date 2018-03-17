@@ -16,4 +16,4 @@ ___
 ### TODO
 - [ ] Installationsroutine
 - [ ] Editieren von bestehenden Servern
-- [ ] Prüfen ob es diesen Benutzer überhaupt gibt
+- [X] Prüfen ob es diesen Benutzer überhaupt gibt
