@@ -15,7 +15,7 @@ public class ConsoleApi {
 
         String command;
         if(serverObject.getRestart()) {
-            command = String.format("bash -c 'while true; do %s; %s echo \\\"Beendet - Restart folgt\\\"; sleep 5; done'", serverObject.getStartCMD(),
+            command = String.format("bash -c 'while true; do %s; %s echo \"Beendet - Restart folgt\"; sleep 5; done'", serverObject.getStartCMD(),
                     serverObject.getStepCMD().length() > 0 ? serverObject.getStepCMD() + "; " : "");
         } else {
             command = String.format("bash -c '%s; %s'", serverObject.getStartCMD(), serverObject.getStepCMD());
