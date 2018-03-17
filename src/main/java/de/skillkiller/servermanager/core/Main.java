@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class Main {
 
     //Versionsnummer
-    private final static String VERSION = "1.5.3";
+    private final static String VERSION = "1.5.4";
 
     private static Scanner in = new Scanner(System.in);
 
@@ -31,6 +31,8 @@ public class Main {
             System.err.println("Dieses Tool muss als Root ausgführt werden");
             //System.exit(2);
         }
+
+        ConsoleApi.userExist("minecraft");
 
         new Config();
 
@@ -67,7 +69,7 @@ public class Main {
         System.out.println("###############################");
         System.out.println();
         System.out.println("Screen Manager - " + VERSION);
-        System.out.println("Created by Skillkiller");
+        if(Config.printCopyright()) System.out.println("Created by Skillkiller");
         System.out.println();
         System.out.println("###############################");
     }
@@ -119,7 +121,13 @@ public class Main {
                 case "create":
                     if (Utils.userQuestionBoolean("Du willst den Server \"" + args[1] + "\" erstellen?", true)) {
                         boolean restart = Utils.userQuestionBoolean("Auto-Restart?", false);
-                        String benutzer = Utils.userQuestionString("Benutzer?", 2);
+                        boolean selectUser = true;
+                        String benutzer = "";
+                        while (selectUser) {
+                            benutzer = Utils.userQuestionString("Benutzer?", 2);
+                            if (ConsoleApi.userExist(benutzer)) selectUser = false;
+                        }
+
                         String startCMD = Utils.userQuestionString("Start-Befehl?", 2);
                         String stepCMD = Utils.userQuestionString("Zwischen-Befehl?");
                         String serverDir = Utils.userQuestionString("Server Ordner", "/home/" + benutzer + "/" + args[1] + "/");

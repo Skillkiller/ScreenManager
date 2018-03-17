@@ -43,6 +43,11 @@ public class Config {
             saveJSON();
         }
 
+        if(!configJsonObject.containsKey("printCopyright")) {
+            configJsonObject.put("printCopyright", true);
+            saveJSON();
+        }
+
         if (!configJsonObject.containsKey("workingDir")) {
             configJsonObject.put("workingDir", "/server/");
             saveJSON();
@@ -93,6 +98,10 @@ public class Config {
 
     public static File getWorkingDir() {
         return workingDir;
+    }
+
+    public static boolean printCopyright() {
+        return (boolean) configJsonObject.getOrDefault("printCopyright", true);
     }
 
     public static ServerObject getServerObject(String name) {

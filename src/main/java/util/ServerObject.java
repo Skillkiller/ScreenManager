@@ -1,6 +1,6 @@
 package util;
 
-import de.skillkiller.servermanager.core.ScreenCommand;
+import de.skillkiller.servermanager.core.ConsoleApi;
 import org.json.simple.JSONObject;
 
 import java.io.File;
@@ -92,13 +92,13 @@ public class ServerObject {
 
     public void starten() {
         if (!isRunning()) {
-            new ScreenCommand().startCommand(this);
+            new ConsoleApi().startServer(this);
         }
     }
 
     public void stoppen() {
         if (isRunning()) {
-            new ScreenCommand().stopCommand(this);
+            new ConsoleApi().stopServer(this);
         }
     }
 
