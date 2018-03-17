@@ -145,9 +145,9 @@ public class Main {
                     break;
 
                     //TODO Modify Befehl buggy
-                /*case "modify":
+                case "modify":
                     printModifyMenue(args[1]);
-                    break;*/
+                    break;
             }
         } else {
             if (input.equals("exit") || input.equals("e")) {
@@ -159,7 +159,7 @@ public class Main {
     private static void printModifyMenue(String name) {
         System.out.println();
         System.out.println("Modifizierung von " + name);
-        System.out.println("Befehle: " + ConsoleColors.PURPLE.print("[restart | benutzer | startCMD | stopCMD | serverDir]"));
+        System.out.println("Befehle: " + ConsoleColors.PURPLE.print("[restart | benutzer | startCMD | stopCMD | serverDir | cancel | exit]"));
         System.out.print("Befehl: ");
         String input = in.nextLine().toLowerCase();
         String[] args;
@@ -184,8 +184,13 @@ public class Main {
                 break;
 
             case "benutzer":
-                Objects.requireNonNull(Config.getServerObject(name)).setBenutzer(args[1]);
-                System.out.println(ConsoleColors.GREEN.print("Benutzer erfolgreich gesetzt"));
+                if (ConsoleApi.userExist(args[1])) {
+                    Objects.requireNonNull(Config.getServerObject(name)).setBenutzer(args[1]);
+                    System.out.println(ConsoleColors.GREEN.print("Benutzer erfolgreich gesetzt"));
+                } else {
+                    System.out.println("Benutzer Prüfung: Benutzer existiert nicht");
+                    printModifyMenue(name);
+                }
                 break;
 
             case "startCMD":
@@ -208,8 +213,18 @@ public class Main {
 
                 //TODO ServerDir Argument einarbeiten
 
+            case "cancel":
+                System.out.println("Gehe zurück zum Hauptmenü");
+                return;
+
+            case "exit":
+                System.exit(0);
+
                 default:
                     System.out.println(ConsoleColors.RED.print("Befehl nicht erkannt"));
+                    System.out.println("Nutze \"cancel\" um aus dem Menü zu kommen");
+                    printModifyMenue(name);
+
         }
     }
 }

@@ -21,6 +21,7 @@ public class Config {
     private static JSONParser parser = new JSONParser();
     private static JSONObject configJsonObject;
 
+
     public Config() {
         if (!configFile.exists()) {
             try {
@@ -121,7 +122,7 @@ public class Config {
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                 if(jsonObject.containsKey("name")) {
                     if (jsonObject.get("name").toString().equals(serverJSONObject.get("name"))) {
-                        find = 1;
+                        find = i;
                     }
                 }
             }
