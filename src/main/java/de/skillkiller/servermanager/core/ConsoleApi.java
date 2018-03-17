@@ -48,16 +48,12 @@ public class ConsoleApi {
 
     public static boolean userExist(String username) {
         //grep -c '^test:' /etc/passwd
-        ProcessBuilder processBuilder = new ProcessBuilder("grep","-c", String.format("'^%s:'", username), "/etc/passwd");
-        System.out.println("Starte: " + processBuilder.command());
+        ProcessBuilder processBuilder = new ProcessBuilder("grep","-c", String.format("^%s:", username), "/etc/passwd");
         Process process;
         try {
             process = processBuilder.start();
             process.waitFor();
             String result = new BufferedReader(new InputStreamReader(process.getInputStream())).lines().collect(Collectors.joining("\n"));
-            System.out.println();
-            System.out.println("Output:" + result);
-            System.out.println();
 
             int number = Integer.parseInt(result.trim());
             if (number == 1) {

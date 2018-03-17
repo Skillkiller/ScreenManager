@@ -32,8 +32,6 @@ public class Main {
             //System.exit(2);
         }
 
-        ConsoleApi.userExist("minecraft");
-
         new Config();
 
         int deleted = 0;
@@ -126,6 +124,7 @@ public class Main {
                         while (selectUser) {
                             benutzer = Utils.userQuestionString("Benutzer?", 2);
                             if (ConsoleApi.userExist(benutzer)) selectUser = false;
+                            System.out.println("Benutzer Prüfung: " + (!selectUser ? "Benutzer existiert" : "Benutzer existiert nicht"));
                         }
 
                         String startCMD = Utils.userQuestionString("Start-Befehl?", 2);
