@@ -1,4 +1,4 @@
-# ScreenManager
+# ScreenManager - Outdated
 Ein Tool zum Verwalten von verschiedensten Server in Verbindung mit Screen
 ___
 ## Credits
