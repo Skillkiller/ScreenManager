@@ -186,7 +186,7 @@ public class Config {
     private static void saveJSON() {
         try (FileWriter file = new FileWriter(configFile)) {
 
-            file.write(configJsonObject.toJSONString());
+            file.write(configJsonObject.toString(2));
             file.flush();
 
         } catch (IOException e) {
